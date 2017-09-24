@@ -1,0 +1,51 @@
+doctype 5
+html
+    include includes/head.pug
+
+    body
+        include includes/nav.pug
+        include includes/sub-nav.pug
+
+        div#content.container(data-test-id=testId)
+            // display any errors if there are any on page load
+            if (error && error.length > 0)
+                div.alert.alert-danger(role='alert')
+                    span.glyphicon.glyphicon-exclamation-sign(aria-hidden='true')
+                    span #{error}
+
+            // history search query
+            if (!testId)
+                div.input-group.mBottom10
+                    input#history-query.form-control(type="text" maxlength="700" placeholder="Query...")
+                    span.input-group-btn
+                        button#history-search.btn.btn-default.icon-btn(type='button')
+                            span.glyphicon.glyphicon-search
+
+            div.panel.panel-default
+                div#history-panel.panel-body.panel-board
+                    // progress bar
+                    div#history-load
+
+                    // errors
+                    div#history-error.alert.alert-danger.hidden(role='alert')
+
+                    // table to display test history
+                    table#history.table.table-hover.table-responsive
+                        thead
+                            tr
+                                th Name
+                                th Project
+                                th Computer
+                                th Group
+                                th Status
+                                th Created
+                                th.width32
+
+                        tbody
+
+                    // info
+                    div#history-info.alert.alert-info.hidden(role='alert')
+
+                // history pagination
+                nav.pagination(aria-label="Page Navigation")
+                    ul#history-paging.pagination

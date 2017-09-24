@@ -1,0 +1,88 @@
+doctype 5
+html
+    include includes/head.pug
+
+    body
+        include includes/nav.pug
+        include includes/sub-nav.pug
+
+        #content.container
+            // display any errors if there are any on page load
+            if (error && error.length > 0)
+                div.alert.alert-danger(role='alert')
+                    span.glyphicon.glyphicon-exclamation-sign(aria-hidden='true')
+                    span #{error}
+
+
+            // panel for the latest 5 runs
+            div.panel.panel-default
+                div.panel-heading
+                    div.panel-header
+                        span Latest 5 Runs
+
+                div#latest-runs-panel.panel-body
+                    // errors
+                    div#latest-runs-error.alert.alert-danger.hidden(role='alert')
+
+                    // table of runs
+                    table#latest-runs.table.table-hover.table-responsive
+                        thead
+                            tr
+                                th.centre Status
+                                th Name
+                                th Project
+                                th Computer
+                                th Group
+                                th Tests Run
+                                th Duration
+
+                        tbody
+
+                    // info
+                    div#latest-runs-info.alert.alert-info.hidden(role='alert')
+
+
+            // panel for slowest tests
+            div.panel.panel-default
+                div.panel-heading
+                    div.panel-header
+                        span Top 5 Slowest Tests
+
+                div#slowest-tests-panel.panel-body
+                    // errors
+                    div#slowest-tests-error.alert.alert-danger.hidden(role='alert')
+
+                    // table of tests
+                    table#slowest-tests.table.table-hover.table-responsive
+                        thead
+                            tr
+                                th Name
+                                th Duration
+
+                        tbody
+
+                    // info
+                    div#slowest-tests-info.alert.alert-info.hidden(role='alert')
+
+
+            // panel for most failing tests
+            div.panel.panel-default
+                div.panel-heading
+                    div.panel-header
+                        span Top 5 Failing Tests
+
+                div#failing-tests-panel.panel-body
+                    // errors
+                    div#failing-tests-error.alert.alert-danger.hidden(role='alert')
+
+                    // table of tests
+                    table#failing-tests.table.table-hover.table-responsive
+                        thead
+                            tr
+                                th Name
+                                th Count
+
+                        tbody
+
+                    // info
+                    div#failing-tests-info.alert.alert-info.hidden(role='alert')

@@ -1,0 +1,208 @@
+@text_light_forecolour: #FFF;
+@text_panel_forecolour: #FFF;
+@text_select_forecolour: #BF5700;
+
+@core_colour: #F0AD4E;
+@core_dark_colour: #EB9316;
+@core_border_colour: #EE8811;
+@core_border_dark_colour: #BF5700;
+@core_sub_nav_colour: #E4810E;
+
+@core_hover_colour: #EC971F;
+@core_hover_border_colour: #D58512;
+
+@panel_colour: #F0AD4E;
+@panel_dark_colour: #E4810E;
+
+@pale_orange: #FAEBCC;
+
+@core_success_colour: #5cb85c;
+@core_success_border_colour: #4cae4c;
+@core_hover_success_colour: #449d44;
+@core_hover_success_border_colour: #398439;
+
+// TABLES
+table.table-hover {
+    tbody {
+        tr:hover {
+            background-color: @pale_orange;
+        }
+    }
+}
+
+.table {
+    thead {
+        tr {
+            th {
+                border-bottom-color: @core_hover_colour;
+            }
+        }
+    }
+}
+
+
+// NAVIGATION
+.navbar-default {
+    background-color: @core_colour !important;
+    border-color: @core_dark_colour;
+
+    .navbar-brand {
+        color: @text_light_forecolour !important;
+    }
+
+    .navbar-nav .active {
+        a, a:focus, a:hover {
+            color: @text_light_forecolour !important;
+            background-color: @core_border_colour !important;
+        }
+    }
+}
+
+.subnavbar {
+    background-color: @core_sub_nav_colour !important;
+}
+
+.nav-tabs {
+    border-bottom-color: @core_border_colour !important;
+
+    a:hover {
+        background-color: @core_colour !important;
+        border-color: @core_border_colour !important;
+        color: @text_panel_forecolour !important;
+    }
+    
+    .active {
+        a {
+            background-color: @core_dark_colour !important;
+            color: @text_light_forecolour !important;
+            border-color: @core_border_colour !important;
+        }
+    }
+
+    .active .badge {
+        color: @core_dark_colour;
+        background-color: @text_light_forecolour;
+    }
+}
+
+#navbar .btn-default {
+    background-color: @core_dark_colour !important;
+    border-color: @core_border_colour !important;
+    color: @text_light_forecolour !important;
+}
+
+#subnavbar .btn-default {
+    background-color: @core_dark_colour !important;
+    border-color: @core_border_dark_colour !important;
+    color: @text_light_forecolour !important;
+}
+
+#navbar .btn-default:hover {
+    background-color: @core_colour !important;
+    border-color: @core_dark_colour !important;
+}
+
+
+// INPUTS
+input[type='text']:focus,
+input[type='email']:focus,
+input[type='password']:focus,
+select:focus,
+button.btn-default:focus {
+    border-color: @core_colour !important;
+}
+
+// BUTTONS
+.btn-default:not([class*=dropdown-toggle]) {
+    background-color: @core_colour !important;
+    border-color: @core_dark_colour !important;
+    color: @text_light_forecolour !important;
+}
+
+.btn-default:not([class*=dropdown-toggle]):hover {
+    background-color: @core_hover_colour !important;
+    border-color: @core_hover_border_colour !important;
+}
+
+// SUCCESS BUTTONS
+.btn-default.selected:focus {
+    border-color: @core_success_border_colour !important;
+}
+
+.btn-default.selected {
+    background-color: @core_success_colour !important;
+    border-color: @core_success_border_colour !important;
+}
+
+.btn-default.selected:hover {
+    background-color: @core_hover_success_colour !important;
+    border-color: @core_hover_success_border_colour !important;
+}
+
+
+// PANELS
+.panel-default {
+    border-color: @panel_dark_colour !important;
+}
+
+.panel-heading {
+    background-color: @panel_colour !important;
+    border-color: @panel_dark_colour !important;
+    color: @text_panel_forecolour !important;
+}
+
+
+// WELLS
+.well {
+    border-color: @core_border_colour;
+}
+
+
+// FORMS
+.form-container {
+    border: 1px solid @core_dark_colour;
+}
+
+form {
+    textarea:focus {
+        border: 1px solid @core_colour !important;
+    }
+
+    .form-control:focus,
+    input[type='submit']:focus,
+    button:focus {
+        box-shadow: inset
+            0 1px 1px rgba(0, 0, 0, 0.075),
+            0 0 8px @core_colour !important;
+    }
+}
+
+.form-control {
+    border-color: @core_border_colour;
+}
+
+.form-control-success {
+    border-color: @core_success_border_colour !important;
+}
+
+
+// LINKS
+a {
+    color: @core_dark_colour;
+}
+
+.navbar-nav li {
+    a {
+        color: @text_select_forecolour !important;
+    }
+
+    a:hover {
+        color: @text_light_forecolour !important;
+        background-color: @core_dark_colour !important;
+    }
+}
+
+.dropdown-menu li a:hover {
+    background-color: @core_hover_colour !important;
+    color: @text_light_forecolour !important;
+}

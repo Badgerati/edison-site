@@ -1,0 +1,20 @@
+{
+    "name": "edison-site",
+    "description": "Test results website for use with the Edison (and other) testing frameworks",
+    "authors": [
+        "Matthew Kelly <badgerati42@gmail.com>"
+    ],
+    "ignore": [
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "jquery": "v3.2.1",
+        "moment": "v2.18.1",
+        "validator-js": "v7.2.0",
+        "bootstrap": "v3.3.7",
+        "bootstrap-select": "v1.12.0"
+    }
+}

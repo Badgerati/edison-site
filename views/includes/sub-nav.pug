@@ -1,0 +1,24 @@
+// sub-navigation bar for project/computer/etc filtering
+div.navbar.navbar-default.subnavbar-top.subnavbar
+    div.container
+
+        // main filters
+        div#subnavbar.navbar-collapse.collapse.mTop3
+            ul.nav.navbar-nav
+                li
+                    label.inline Computer:
+                    select#computer.selectpicker.show-tick.show-menu-arrow.inline(data-value=(computer ? computer : "All"))
+                        each comp in computers
+                            option= comp
+
+                li
+                    label.inline.mLeft20 Group:
+                    select#group.selectpicker.show-tick.show-menu-arrow.inline(data-value=(group ? group : "All"))
+                        each grp in groups
+                            option= grp
+
+                li
+                    label.inline.mLeft20 Project:
+                    select#project.selectpicker.show-tick.show-menu-arrow.inline(data-value=(project ? project : "All"))
+                        each prj in projects
+                            option= prj

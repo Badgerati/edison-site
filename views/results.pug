@@ -1,0 +1,136 @@
+doctype 5
+html
+    include includes/head.pug
+
+    body
+        include includes/nav.pug
+
+        #content.container
+            // display any errors if there are any on page load
+            if (error && error.length > 0)
+                div.alert.alert-danger(role='alert')
+                    span.glyphicon.glyphicon-exclamation-sign(aria-hidden='true')
+                    span #{error}
+            
+            if (run)
+                // run title
+                div.page-header(data-run-id=runId)
+                    h1.inline #{run.name}
+                    form#csv-form.inline.mRight10(action='/runs/' + runId + '/results/csv', method='get')
+                        button#csv-submit.btn.btn-default.icon-btn(type='submit')
+                            span.glyphicon.glyphicon-download-alt
+                    h1.mTop10
+                        small #{run.computer.name} - #{run.project.name} (#{run.group.name})
+
+
+                // nav tabs titles
+                div.nav-tabs-content
+                    ul.nav.nav-tabs(role='tablist')
+                        li.active(role='presentation' data-section='results-tab')
+                            a(href='#') Results
+                        li(role='presentation' data-section='errors-tab')
+                            a(href='#') Errors
+                        li(role='presentation' data-section='slowest-tab')
+                            a(href='#') Slowest
+                        li(role='presentation' data-section='justifier-tab')
+                            a(href='#') Justifier
+
+                    // nav tabs data
+                    div.nav-tabs-data
+
+                        // test results tab
+                        #results-tab
+                            div.panel.panel-default
+                                div#results-panel.panel-body.panel-board
+                                    // status filters
+                                    div#status-filters.btn-group.mBottom10(role="group" aria-label="filter")
+                                        button.btn.btn-default(type="button") Success
+                                        button.btn.btn-default.selected(type="button") Failure
+                                        button.btn.btn-default.selected(type="button") Error
+                                        button.btn.btn-default(type="button") Ignore
+                                        button.btn.btn-default(type="button") Inconclusive
+
+                                    // progress bar
+                                    div#results-load
+
+                                    // errors
+                                    div#results-error.alert.alert-danger.hidden(role='alert')
+
+                                    // table to display all the results (paginated)
+                                    table#results.table.table-hover.table-responsive
+                                        thead
+                                            tr
+                                                th Name
+                                                th Status
+                                                th Fixed
+                                                th Duration
+                                                th.width62
+
+                                        tbody
+
+                                    // info
+                                    div#results-info.alert.alert-info.hidden(role='alert')
+
+                                // results pagination
+                                nav.pagination(aria-label="Page Navigation")
+                                    ul#results-paging.pagination
+
+
+                        // grouped errors for results tab
+                        #errors-tab.hidden
+
+
+                        // top slowest results tab
+                        #slowest-tab.hidden
+                            div.panel.panel-default
+                                div#slowest-panel.panel-body.panel-board
+                                    // progress bar
+                                    div#slowest-load
+
+                                    // errors
+                                    div#slowest-error.alert.alert-danger.hidden(role='alert')
+
+                                    // table to display all the slowest results
+                                    table#slowest.table.table-hover.table-responsive
+                                        thead
+                                            tr
+                                                th Name
+                                                th Status
+                                                th Fixed
+                                                th Duration
+                                                th.width62
+
+                                        tbody
+
+                                    // info
+                                    div#slowest-info.alert.alert-info.hidden(role='alert')
+
+
+                        // results justifier for failed results
+                        #justifier-tab.hidden
+                            div.panel.panel-default
+                                div#justifier-panel.panel-body.panel-board
+                                    // progress bar
+                                    div#justifier-load
+
+                                    // errors
+                                    div#justifier-error.alert.alert-danger.hidden(role='alert')
+
+                                    // table to display all the justified results (paginated)
+                                    table#justifier.table.table-hover.table-responsive
+                                        thead
+                                            tr
+                                                th Name
+                                                th Status
+                                                th Fixed
+                                                th Comment
+                                                th.width62
+
+                                        tbody
+
+                                    // info
+                                    div#justifier-info.alert.alert-info.hidden(role='alert')
+
+                                // justifier pagination
+                                nav.pagination(aria-label="Page Navigation")
+                                    ul#justifier-paging.pagination

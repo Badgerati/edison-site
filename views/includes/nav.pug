@@ -1,0 +1,34 @@
+// main navigation bar for the site
+div.navbar.navbar-default.navbar-fixed-top
+    div.container
+
+        // site logo
+        div.navbar-header
+            a.navbar-brand(href='/')
+                img.banner-logo(src='/images/logo-light.png')
+        
+        // main navigation
+        div#navbar.navbar-collapse.collapse
+            ul.nav.navbar-nav
+                li(class=(pageName == 'index' ? 'active' : ''))
+                    a(href='/') Home
+                li(class=((pageName == 'runs' || pageName == 'results') ? 'active' : ''))
+                    a(href='/runs') Runs
+                li(class=(pageName == 'history' ? 'active' : ''))
+                    a(href='/tests/history') History
+                li(class=(pageName == 'comparisons' ? 'active' : ''))
+                    a(href='#') Comparisons
+                li(class=(pageName == 'dashboard' ? 'active' : ''))
+                    a(href='/dashboard') Dashboard
+            
+            // search bar
+            ul.navbar-form.navbar-right
+                form#search-form.no-height.inline.mRight10(action='/search', method='get', required)
+                    input#search-query.form-control(type='text', name='query', placeholder='Search...')
+                    button#search-submit.btn.btn-default.icon-btn(type='submit')
+                        span.glyphicon.glyphicon-search
+
+                // refresh button
+                if (pageName == 'index' || pageName == 'runs' || pageName == 'results' || pageName == 'dashboard')
+                    button#refresh-toggle.btn.btn-default.icon-btn(type='button')
+                        span.glyphicon.glyphicon-refresh

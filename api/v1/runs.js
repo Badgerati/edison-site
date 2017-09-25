@@ -104,7 +104,10 @@ module.exports = function() {
         var page = (req.query.page || 1);
         var limit = (req.query.limit || 25);
 
-
+        RunRepo.compare(page, limit, runId1, runId2, (e, r) => {
+            if (e) { logger.error(res, e); return; }
+            res.json({ error: false, pagination: r });
+        });
     });
 
 

@@ -1,4 +1,5 @@
 // libs
+var _ = require('lodash');
 var mongoose = require('mongoose');
 var moment = require('moment');
 var run = require('../models/run.js');
@@ -389,7 +390,70 @@ RunRepo.compare = function(page, limit, runId1, runId2, cb) {
         getResults((e, res1, res2) => {
             if (e) { cb(e); return; }
 
+            // convert to arrays into hashes for faster comparing
+            var res1 = _.reduce(res1, (map, value) => {
+                map[value.result.test._id] = value;
+                return map;
+            }, {});
+
+            var res2 = _.reduce(res2, (map, value) => {
+                map[value.result.test._id] = value;
+                return map;
+            }, {});
+
             // compare the results from run1 to run2 (only return results where states change)
+            var comparison = [];
+            var exists = false;
+
+            // for run1 -> 2, get results that change state or didn't exist in 2
+            _.each(res1, (v, k) => {
+                exists = res2[k];
+
+                // if it didn't exist in 2, or state changed, record it
+                if (!exists || (v.state != exists.state)) {
+                    comparison[comparison.length] = {
+                        test: v.result.test,
+                        created: v.created_at,
+                        state1: v.state,
+                        state2: (exists ? exists.state : 'n/a')
+                    }
+                }
+            });
+
+            // for run2 -> 1, only get results that now don't exist in 1 (state changes will be above)
+            _.each(res2, (v, k) => {
+                exists = res1[k];
+
+                // if it didn't exist in 2, or state changed, record it
+                if (!exists) {
+                    comparison[comparison.length] = {
+                        test: v.result.test,
+                        created: v.created_at,
+                        state1: 'n/a',
+                        state2: v.state
+                    }
+                }
+            });
+
+            // sort the results
+            comparison = _.sortBy(comparison, ['created']);
+
+            // paginate the results
+            var total = comparison.length;
+            var pages = Math.ceil(total / limit);
+            if (page > pages) { page = pages }
+            if (page <= 0) { page = 1; }
+
+            cb(null, {
+                pages: pages,
+                total: total,
+                found: total,
+                page: page,
+                limit: limit,
+                comparison: comparison,
+                run1: run1,
+                run2: run2
+            });
         });
     });
 

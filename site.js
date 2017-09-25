@@ -22,8 +22,10 @@ try {
     /////////////////////////////////////
     // mongo setup
     /////////////////////////////////////
+    var mongo_conn = (process.env.EDISON_MONGO_CONN || process.env.MONGO_CONN || config.mongo.connection);
+
     mongoose.Promise = global.Promise;
-    mongoose.connect((process.env.MONGO_CONN || config.mongo.connection), { useMongoClient: true }, (err) => {
+    mongoose.connect(mongo_conn, { useMongoClient: true }, (err) => {
         if (err) {
             console.log(err);
             throw err;

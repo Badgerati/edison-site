@@ -111,6 +111,17 @@ module.exports = function() {
     });
 
 
+    // retrieves the distinct errors for a run
+    router.get('/:runId/errors', (req, res) => {
+        var runId = req.params.runId;
+
+        RunRepo.getResultErrors(runId, (e, r) => {
+            if (e) { logger.error(res, e); return; }
+            res.json({ error: false, error_messages: r });
+        });
+    });
+
+
     // retrieves the results for the passed runId (using states filter and pagination)
     router.get('/:runId/results', (req, res) => {
         var runId = req.params.runId;

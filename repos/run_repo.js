@@ -347,6 +347,16 @@ RunRepo.getAllResults = function(id, cb) {
     (e, r) => cb(e, RunResultRepo.mapoutCsvArray(r)));
 }
 
+// returns all distinct errors for a run
+RunRepo.getResultErrors = function(id, cb) {
+    run_result.getErrors({
+        query: {
+            run: mongoose.Types.ObjectId(id)
+        }
+    },
+    (e, r) => cb(e, r));
+}
+
 // compares two run's results
 RunRepo.compare = function(page, limit, runId1, runId2, cb) {
     // page limiting
@@ -459,7 +469,6 @@ RunRepo.compare = function(page, limit, runId1, runId2, cb) {
             });
         });
     });
-
 }
 
 

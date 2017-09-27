@@ -245,6 +245,48 @@ schema.statics.getPaginatedResults = function(opt, cb) {
 }
 
 
+// returns the errors that have occurred for a specific run
+schema.statics.getErrors = function(opt, cb) {
+    this.aggregate([
+        {
+            "$match": opt.query
+        },
+        {
+            "$lookup": {
+                "from": "results",
+                "localField": "result",
+                "foreignField": "_id",
+                "as": "result"
+            }
+        },
+        {
+            "$unwind": "$result"
+        },
+        {
+            "$match": { 'result.error_message': { $ne: null } }
+        },
+        {
+            "$group": {
+                '_id': "$result.error_message",
+                'count': { $sum:  1 }
+            }
+        },
+        {
+            "$lookup": {
+                "from": "errormessages",
+                "localField": "_id",
+                "foreignField": "_id",
+                "as": "error_message"
+            }
+        },
+        {
+            "$unwind": "$error_message"
+        },
+    ],
+    (e, r) => cb(e, r));
+}
+
+
 // returns all results (useful for csv download)
 schema.statics.getAllResults = function(opt, cb) {
     this.aggregate([

@@ -21,7 +21,7 @@ var page = {
     results: 'results',
     tests: 'tests',
     history: 'history',
-    comparisons: 'comparisons',
+    compare: 'compare',
     dashboard: 'dashboard',
     about: 'about',
     search: 'search'
@@ -95,6 +95,31 @@ module.exports = function() {
             render(e, p, c, g);
         });
     });
+
+
+    /////////////////////////////////////
+    // compare
+    /////////////////////////////////////
+    router.get('/' + page.runs + '/' + page.compare, function(req, res) {
+        // function to render the page
+        var render = function(err, p, c, g) {
+            res.render(page.compare, {
+                pageName: page.compare,
+                computers: c,
+                computer: req.query.computer,
+                groups: g,
+                group: req.query.group,
+                projects: p,
+                project: req.query.project,
+                error: err
+            });
+        }
+
+        // populate the lists
+        NavHelper.getSubNavLists((e, p, c, g) => {
+            render(e, p, c, g);
+        });
+    })
 
 
     /////////////////////////////////////

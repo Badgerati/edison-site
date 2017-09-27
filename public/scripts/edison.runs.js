@@ -39,7 +39,7 @@ function loadRuns(page) {
             return;
         }
 
-        appendTableRunRows(d.pagination.runs, 'runs');
+        appendTableRunRows({ runs: d.pagination.runs, table: 'runs', includeUrl: true });
         bindPagination('runs-paging', d.pagination.page, d.pagination.pages, loadRuns);
     });
 }

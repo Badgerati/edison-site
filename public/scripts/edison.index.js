@@ -42,7 +42,7 @@ function loadLatestRuns() {
             return;
         }
 
-        appendTableRunRows(d.pagination.runs, 'latest-runs');
+        appendTableRunRows({ runs: d.pagination.runs, table: 'latest-runs', includeUrl: true });
     });
 }
 

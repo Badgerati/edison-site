@@ -129,7 +129,7 @@ function doAjaxCall(url, method, data, callback, form, submit, input, reverter) 
 
             if (callback) {
                 if (data.error) {
-                    console.log(data.error);
+                    console.log(data.message);
                 }
 
                 callback(null, data);
@@ -231,6 +231,54 @@ function hideProgress(name) {
 }
 
 
+function generateStatusLabel(state) {
+    switch (state.toLowerCase()) {
+        case 'success':
+            return '<span class="label label-success">' + state + '</span>';
+
+        case 'failure':
+        case 'error':
+            return '<div class="label label-danger">' + state + '</div>';
+
+        case 'inconclusive':
+            return '<span class="label label-warning">' + state + '</span>';
+
+        case 'ignore':
+            return '<span class="label label-primary">' + state + '</span>';
+
+        case 'n/a':
+            return '<span class="label label-default">' + state + '</span>';
+    }
+}
+
+
+function appendTableCompareRows(opts) {
+    if (!opts.compare || opts.compare.length == 0) {
+        return;
+    }
+
+    var values = null;
+    var state1 = null;
+    var state2 = null;
+
+    opts.compare.forEach((v) => {
+        // status labels
+        state1 = generateStatusLabel(v.state1);
+        state2 = generateStatusLabel(v.state2);
+
+        // row values
+        values = [
+            v.test.name,
+            state1,
+            state2
+        ];
+
+        // add the row to the table
+        appendTableRow(opts.table, values, v.test._id);
+    });
+}
+
+
 function appendTableResultRows(results, table, opts) {
     if (!results || results.length == 0) {
         return;
@@ -252,24 +300,7 @@ function appendTableResultRows(results, table, opts) {
         duration = moment(v.duration).format('ss[s] SSS[ms]');
 
         // status labels
-        switch (v.state.toLowerCase()) {
-            case 'success':
-                state = '<span class="label label-success">' + v.state + '</span>';
-                break;
-
-            case 'failure':
-            case 'error':
-                state = '<div class="label label-danger">' + v.state + '</div>';
-                break;
-
-            case 'inconclusive':
-                state = '<span class="label label-warning">' + v.state + '</span>';
-                break;
-
-            case 'ignore':
-                state = '<span class="label label-primary">' + v.state + '</span>';
-                break;
-        }
+        state = generateStatusLabel(v.state);
 
         // history results display slightly different data to normal ones
         if (opts.history) {
@@ -363,8 +394,8 @@ function appendTableResultRows(results, table, opts) {
 }
 
 
-function appendTableRunRows(runs, table) {
-    if (!runs || runs.length == 0) {
+function appendTableRunRows(opts) {
+    if (!opts.runs || opts.runs.length == 0) {
         return;
     }
 
@@ -372,7 +403,7 @@ function appendTableRunRows(runs, table) {
     var failedTests = 0;
     var failedStr = '';
 
-    runs.forEach((v) => {
+    opts.runs.forEach((v) => {
         failedTests = v.stats.total - v.stats.pass;
         failedStr = ' (<span class="fail">' + formatNumber(failedTests) + '</span>)'
 
@@ -388,8 +419,8 @@ function appendTableRunRows(runs, table) {
             '<span class="glyphicon glyphicon-time" aria-hidden="true"></span>' + moment(v.duration).format('HH[h] mm[m] ss[s]')
         ]
 
-        var url = '/runs/' + v.id + '/results';
-        var row = appendTableRow(table, values, v.id, url, true);
+        var url = (opts.includeUrl ? '/runs/' + v.id + '/results' : null);
+        var row = appendTableRow(opts.table, values, v.id, url, true);
         $(row).addClass('clickable');
     });
 

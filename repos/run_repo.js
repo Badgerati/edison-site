@@ -442,7 +442,10 @@ RunRepo.compare = function(page, limit, runId1, runId2, cb) {
             var total = comparison.length;
             var pages = Math.ceil(total / limit);
             if (page > pages) { page = pages }
-            if (page <= 0) { page = 1; }
+            if (page <= 0) { page = 1 }
+
+            comparison = _.drop(comparison, ((page - 1) * limit));
+            comparison = _.take(comparison, limit);
 
             cb(null, {
                 pages: pages,
@@ -450,9 +453,9 @@ RunRepo.compare = function(page, limit, runId1, runId2, cb) {
                 found: total,
                 page: page,
                 limit: limit,
-                comparison: comparison,
-                run1: run1,
-                run2: run2
+                compare: comparison,
+                run1: RunRepo.mapout(run1),
+                run2: RunRepo.mapout(run2)
             });
         });
     });

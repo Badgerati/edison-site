@@ -16,14 +16,14 @@ div.navbar.navbar-default.navbar-fixed-top
                     a(href='/runs') Runs
                 li(class=(pageName == 'history' ? 'active' : ''))
                     a(href='/tests/history') History
-                li(class=(pageName == 'comparisons' ? 'active' : ''))
-                    a(href='#') Comparisons
+                li(class=(pageName == 'compare' ? 'active' : ''))
+                    a(href='/runs/compare') Compare
                 li(class=(pageName == 'dashboard' ? 'active' : ''))
                     a(href='/dashboard') Dashboard
             
             // search bar
             ul.navbar-form.navbar-right
-                form#search-form.no-height.inline.mRight10(action='/search', method='get', required)
+                form#search-form.no-height.inline.mRight10(action='#', method='get', required)
                     input#search-query.form-control(type='text', name='query', placeholder='Search...')
                     button#search-submit.btn.btn-default.icon-btn(type='submit')
                         span.glyphicon.glyphicon-search

@@ -1,0 +1,97 @@
+doctype 5
+html
+    include includes/head.pug
+
+    body
+        include includes/nav.pug
+        include includes/sub-nav.pug
+
+        #content.container
+            // display any errors if there are any on page load
+            if (error && error.length > 0)
+                div.alert.alert-danger(role='alert')
+                    span.glyphicon.glyphicon-exclamation-sign(aria-hidden='true')
+                    span #{error}
+
+            // currently select runs for comparing
+            div.two-panel
+
+                // panel for the current run
+                div#current-run.panel.panel-warning.left-panel.clickable
+                    div.panel-heading
+                        div.panel-header
+                            span Current Run
+
+                    div.panel-body
+                        div.alert.alert-warning.mTop0(role='alert')
+                            span Select a release...
+
+                // panel for the previous run to compare against
+                div#previous-run.panel.panel-warning.right-panel.clickable
+                    div.panel-heading
+                        div.panel-header
+                            span Previous Run
+
+                    div.panel-body
+                        div.alert.alert-warning.mTop0(role='alert')
+                            span Select a release...
+
+
+
+            // hidden panel for the run selection
+            div#run-select.panel.panel-default(style="display: none")
+                div.panel-heading
+                    div.panel-header
+                        span Run Selection
+
+                div.panel-body
+                    // progress bar
+                    div#runs-load
+
+                    // errors
+                    div#runs-error.alert.alert-danger.hidden(role='alert')
+
+                    // table to display all the runs (paginated)
+                    table#runs.table.table-hover.table-responsive
+                        thead
+                            tr
+                                th.centre Status
+                                th Name
+                                th Project
+                                th Computer
+                                th Group
+                                th Tests Run
+                                th Duration
+
+                        tbody
+
+                    // info
+                    div#runs-info.alert.alert-info.hidden(role='alert')
+
+
+
+            // hidden panel for the comparison results
+            div#compare-panel.panel.panel-default(style="display: none")
+                div.panel-body.panel-board
+                    // progress bar
+                    div#compare-load
+
+                    // errors
+                    div#compare-error.alert.alert-danger.hidden(role='alert')
+
+                    // table to display all the compare results (paginated)
+                    table#compare.table.table-hover.table-responsive
+                        thead
+                            tr
+                                th Name
+                                th Current State
+                                th Previous State
+
+                        tbody
+
+                    // info
+                    div#compare-info.alert.alert-info.hidden(role='alert')
+
+                // compare pagination
+                nav.pagination(aria-label="Page Navigation")
+                    ul#compare-paging.pagination

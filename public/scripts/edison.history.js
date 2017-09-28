@@ -36,22 +36,22 @@ function getSearchQuery() {
 
 function doHistoryAjaxCall(url) {
     doAjaxCall(url, 'get', null, (e, d) => {
-        hideProgress('history-progress');
+        hideProgress('#history-progress');
 
         if (e || d.error) {
             showAlert('history-error', null, (e || d.message));
             return;
         }
 
-        clearTable('history');
+        clearTable('#history');
 
         if (!d.pagination || !d.pagination.results || d.pagination.results.length == 0) {
             showAlert('history-info', null, 'There are no results for the test to display');
             return;
         }
 
-        appendTableResultRows(d.pagination.results, 'history', { expandable: true, history: true });
-        bindPagination('history-paging', d.pagination.page, d.pagination.pages, loadHistoryById);
+        appendTableResultRows(d.pagination.results, '#history', { expandable: true, history: true });
+        bindPagination('#history-paging', d.pagination.page, d.pagination.pages, loadHistoryById);
     });
 }
 
@@ -60,7 +60,7 @@ function loadHistoryBySearch(page) {
     page = (page || 1);
 
     hideAlert(['history-error', 'history-info']);
-    showProgress('history-progress', 'history-load');
+    showProgress('history-progress', '#history-load');
 
     var project = getSelectOption('project', 'All', true);
     var computer = getSelectOption('computer', 'All', true);
@@ -76,7 +76,7 @@ function loadHistoryById(page) {
     page = (page || 1);
 
     hideAlert(['history-error', 'history-info']);
-    showProgress('history-progress', 'history-load');
+    showProgress('history-progress', '#history-load');
 
     var project = getSelectOption('project', 'All', true);
     var computer = getSelectOption('computer', 'All', true);

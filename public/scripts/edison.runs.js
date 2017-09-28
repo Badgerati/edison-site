@@ -17,7 +17,7 @@ function loadRuns(page) {
     page = (page || 1);
 
     hideAlert(['runs-error', 'runs-info']);
-    showProgress('runs-progress', 'runs-load');
+    showProgress('runs-progress', '#runs-load');
 
     var project = getSelectOption('project', 'All', true);
     var computer = getSelectOption('computer', 'All', true);
@@ -25,21 +25,21 @@ function loadRuns(page) {
 
     var url = '/api/v1/runs?limit=25&page=' + page + '&project=' + project + '&computer=' + computer + '&group=' + group;
     doAjaxCall(url, 'get', null, (e, d) => {
-        hideProgress('runs-progress');
+        hideProgress('#runs-progress');
 
         if (e || d.error) {
             showAlert('runs-error', null, (e || d.message));
             return;
         }
 
-        clearTable('runs');
+        clearTable('#runs');
 
         if (!d.pagination.runs || d.pagination.runs.length == 0) {
             showAlert('runs-info', null, 'There are no test runs to display');
             return;
         }
 
-        appendTableRunRows({ runs: d.pagination.runs, table: 'runs', includeUrl: true });
-        bindPagination('runs-paging', d.pagination.page, d.pagination.pages, loadRuns);
+        appendTableRunRows({ runs: d.pagination.runs, table: '#runs', includeUrl: true });
+        bindPagination('#runs-paging', d.pagination.page, d.pagination.pages, loadRuns);
     });
 }

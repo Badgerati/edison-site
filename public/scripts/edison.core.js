@@ -46,13 +46,18 @@ function bindGenericEvents() {
 }
 
 
-function bindExpandableRows() {
-    $('tr.row-expandable').unbind().click(function(e) {
+function bindExpandableRows(table, action) {
+    $(table).find('tr.row-expandable').unbind().click(function(e) {
         var id = $(this).data('id');
         var element = $(this).parent('tbody').find('div[data-extra-id="' + id + '"]');
 
         if (!element) {
             return;
+        }
+
+        if (action) {
+            console.log('here');
+            action(element, id);
         }
 
         var hiddenParent = $(element).parent('td').parent('tr:hidden');
@@ -219,7 +224,7 @@ function showProgress(name, location) {
             '<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>' +
         '</div>';
         
-    $('#' + location).prepend(html);
+    $(location).prepend(html);
 }
 
 function hideProgress(name) {
@@ -227,7 +232,7 @@ function hideProgress(name) {
         return;
     }
 
-    $('#' + name).remove();
+    $(name).remove();
 }
 
 
@@ -276,6 +281,89 @@ function appendTableCompareRows(opts) {
         // add the row to the table
         appendTableRow(opts.table, values, v.test._id);
     });
+}
+
+
+function appendTableTestRows(opts) {
+    if (!opts.tests || opts.tests.length == 0) {
+        return;
+    }
+
+    var values = null;
+
+    opts.tests.forEach((v) => {
+        // row values
+        values = [
+            v.result.test.name,
+            v.result.test.namespace,
+            v.result.test.assembly,
+        ];
+
+        // add the row to the table
+        appendTableRow(opts.table, values, v.result.test._id);
+    });
+}
+
+
+function appendTableErrorsRows(opts) {
+    if (!opts.errors || opts.errors.length == 0) {
+        return;
+    }
+
+    var values = null;
+    var dropdown = null;
+
+    opts.errors.forEach((v) => {
+        // row values
+        values = [
+            '<pre class="mRight40">' + v.error_message.message + '</pre>',
+            v.count,
+            '<span class="glyphicon glyphicon-cog centre info mTop2 mRight8" aria-hidden="true"></span>'
+        ];
+
+        // add the row to the table
+        var row = appendTableRow(opts.table, values, v._id);
+
+        // add the expandable row
+        if (opts.expandable) {
+            $(row).addClass('row-expandable').addClass('clickable');
+
+            // create the expandable details
+            dropdown =
+                '<tr style="display: none">' +
+                    '<td colspan="' + values.length + '">' +
+                        '<div data-extra-id="' + v._id + '" class="well" style="display: none">' +
+                            '<div class="panel panel-default">' +
+                                '<div class="panel-body panel-board">' +
+                                    '<div class="alert alert-danger hidden" role="alert"></div>' +
+                                    '<table class="table table-hover table-responsive">' +
+                                        '<thead>' +
+                                            '<tr>' +
+                                                '<th>Name</th><th>Namespace</th><th>Assembly</th>' +
+                                            '</tr>' +
+                                        '</thead>' +
+                                        '<tbody></tbody>' +
+                                    '</table>' +
+                                    '<div class="alert alert-info hidden" role="alert"></div>' +
+                                '</div>' +
+                                '<nav class="pagination" aria-label="Page Navigation">' +
+                                    '<ul class="pagination"></ul>' +
+                                '</nav>' +
+                            '</div>' +
+                        '</div>' +
+                    '</td>' +
+                '</tr>';
+
+            // append them, ready for showing
+            $(row).parent('tbody').append(dropdown);
+        }
+    });
+
+    if (opts.expandable) {
+        bindExpandableRows(opts.table, opts.action);
+    }
+
+    bindGenericEvents();
 }
 
 
@@ -387,7 +475,7 @@ function appendTableResultRows(results, table, opts) {
     });
 
     if (opts.expandable) {
-        bindExpandableRows();
+        bindExpandableRows(table);
     }
 
     bindGenericEvents();
@@ -428,8 +516,8 @@ function appendTableRunRows(opts) {
 }
 
 
-function appendTableRow(name, values, id, url, centreFirst) {
-    if (!name || !values || values.length == 0) {
+function appendTableRow(table, values, id, url, centreFirst) {
+    if (!table || !values || values.length == 0) {
         return;
     }
 
@@ -445,22 +533,22 @@ function appendTableRow(name, values, id, url, centreFirst) {
     row += '</tr>';
 
     // append the row to the table
-    $('#' + name + ' tbody').append(row);
+    $(table).find('tbody:nth(0)').append(row);
 
     // return the row that was just appened
     return id
-        ? $('#' + name + ' tbody tr[data-id="' + id + '"]')
+        ? $(table).find('tbody:nth(0) tr[data-id="' + id + '"]')
         : null;
 }
 
 
-function clearTable(name) {
-    $('#' + name + ' tbody tr').remove();
+function clearTable(element) {
+    $(element).find('tbody:nth(0) tr').remove();
 }
 
 
-function clearList(name) {
-    $('#' + name + ' li').remove();
+function clearList(element) {
+    $(element).find('li').remove();
 }
 
 
@@ -661,29 +749,29 @@ function enableElement(element) {
 
 
 function getCurrentPage(element) {
-    return parseInt($('#' + element + ' li.active span').text());
+    return parseInt($(element).find('li.active span').text());
 }
 
 
-function bindPagination(pagingId, current, total, action) {
+function bindPagination(pagingId, current, total, action, opts) {
     clearList(pagingId);
 
     for (var i = 1; i <= total; i++) {
         var link = (i == current)
             ? '<li class="active"><span>' + i + '</span></li>'
             : '<li><span>' + i + '</span></li>';
-        $('#' + pagingId).append(link);
+        $(pagingId).append(link);
     }
 
-    $('#' + pagingId + ' li').click(function() {
+    $(pagingId).find('li').click(function() {
         if ($(this).hasClass('active')) {
             return;
         }
 
-        $('#' + pagingId + ' li.active').toggleClass('active');
+        $(pagingId).find('li.active').toggleClass('active');
         $(this).toggleClass('active');
 
-        action(getCurrentPage(pagingId));
+        action(getCurrentPage(pagingId), opts);
         scrollToTop();
     });
 }

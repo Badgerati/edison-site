@@ -35,6 +35,7 @@ html
                         li(role='presentation' data-section='justifier-tab')
                             a(href='#') Justifier
 
+
                     // nav tabs data
                     div.nav-tabs-data
 
@@ -76,8 +77,34 @@ html
                                     ul#results-paging.pagination
 
 
+
                         // grouped errors for results tab
                         #errors-tab.hidden
+                            div.panel.panel-default
+                                div#errors-panel.panel-body.panel-board
+                                    // progress bar
+                                    div#errors-load
+
+                                    // errors
+                                    div#errors-error.alert.alert-danger.hidden(role='alert')
+
+                                    // table to display all the errors (paginated)
+                                    table#errors.table.table-hover.table-responsive
+                                        thead
+                                            tr
+                                                th Error
+                                                th Count
+                                                th.width62
+
+                                        tbody
+
+                                    // info
+                                    div#errors-info.alert.alert-info.hidden(role='alert')
+
+                                // errors pagination
+                                nav.pagination(aria-label="Page Navigation")
+                                    ul#errors-paging.pagination
+
 
 
                         // top slowest results tab
@@ -104,6 +131,7 @@ html
 
                                     // info
                                     div#slowest-info.alert.alert-info.hidden(role='alert')
+
 
 
                         // results justifier for failed results

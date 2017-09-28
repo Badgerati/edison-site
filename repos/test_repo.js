@@ -84,7 +84,7 @@ TestRepo.getPaginatedHistory = function(query, page, limit, project, computer, g
         if (page <= 0) { page = 1; }
 
         // get the paginated results history
-        run_result.getPaginatedResultsHistory({
+        run_result.getResultsHistory({
             query: query,
             page: page,
             limit: limit

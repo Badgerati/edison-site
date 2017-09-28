@@ -222,18 +222,57 @@ RunRepo.getResult = function(id, result, cb) {
     (e, r) => cb(e, r));
 }
 
-// returns paginated results for a run
-RunRepo.getPaginatedResults = function(id, page, limit, states, cb) {
+// returns all distinct errors for a run
+RunRepo.getResultErrors = function(id, page, limit, cb) {
     // page limiting
     page = parseInt(page || 1);
     limit = parseInt(limit || 25);
-    states = (states || enums.Result);
+
+    if (limit <= 0) { limit = 1; }
+    if (limit > 100) { limit = 100; }
+
+    // get the count of errors
+    RunRepo.getResultErrorsCount(id, (e, total) => {
+        if (e) { cb(e); return; }
+
+        // restrict the page number
+        var pages = Math.ceil(total / limit);
+        if (page > pages) { page = pages }
+        if (page <= 0) { page = 1; }
+
+        // get the paginated errors
+        run_result.getErrors({
+            query: {
+                run: mongoose.Types.ObjectId(id)
+            },
+            page: page,
+            limit: limit
+        },
+        (e, r) => {
+            if (e) { cb(e); return; }
+            cb(null, {
+                pages: pages,
+                total: total,
+                found: r.length,
+                page: page,
+                limit: limit,
+                errors: r
+            });
+        });
+    });
+}
+
+// returns paginated results for a run
+RunRepo.getResults = function(query, page, limit, cb) {
+    // page limiting
+    page = parseInt(page || 1);
+    limit = parseInt(limit || 25);
 
     if (limit <= 0) { limit = 1; }
     if (limit > 100) { limit = 100; }
 
     // get the count of possible results
-    RunRepo.getResultCount(id, states, (e, total) => {
+    RunRepo.getResultCount(query, (e, total) => {
         if (e) { cb(e); return; }
 
         // restrict the page number
@@ -242,11 +281,8 @@ RunRepo.getPaginatedResults = function(id, page, limit, states, cb) {
         if (page <= 0) { page = 1; }
 
         // get the paginated results
-        run_result.getPaginatedResults({
-            query: {
-                run: mongoose.Types.ObjectId(id),
-                state: { $in: states }
-            },
+        run_result.getResults({
+            query: query,
             page: page,
             limit: limit
         },
@@ -310,12 +346,15 @@ RunRepo.addResult = function(id, result, state, duration, cb) {
 }
 
 // returns the number of tests run/passed
-RunRepo.getResultCount = function(id, states, cb) {
-    var search = states
-        ? { 'run': id, 'state': { $in: states } }
-        : { 'run': id }
+RunRepo.getResultCount = function(query, cb) {
+    run_result.getCount({ query: query }, (e, c) => cb(e, c));
+}
 
-    run_result.count(search, (e, c) => cb(e, c));
+// returns the numbers of distinct errors for a run (excluding null and empty)
+RunRepo.getResultErrorsCount = function(id, cb) {
+    run_result.getErrorsCount({
+        query: { 'run': mongoose.Types.ObjectId(id) }
+    }, (e, c) => cb(e, c));
 }
 
 // set a result against a run to be fixed (resultId is the RunResultId)
@@ -345,16 +384,6 @@ RunRepo.getAllResults = function(id, cb) {
         }
     },
     (e, r) => cb(e, RunResultRepo.mapoutCsvArray(r)));
-}
-
-// returns all distinct errors for a run
-RunRepo.getResultErrors = function(id, cb) {
-    run_result.getErrors({
-        query: {
-            run: mongoose.Types.ObjectId(id)
-        }
-    },
-    (e, r) => cb(e, r));
 }
 
 // compares two run's results

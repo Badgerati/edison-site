@@ -1,6 +1,7 @@
 // libs
 var express = require('express');
 var check = require('validator');
+var mongoose = require('mongoose');
 var enums = require('../../tools/enums.js');
 var logger = require('../../tools/logger.js');
 
@@ -114,10 +115,31 @@ module.exports = function() {
     // retrieves the distinct errors for a run
     router.get('/:runId/errors', (req, res) => {
         var runId = req.params.runId;
+        var page = (req.query.page || 1);
+        var limit = (req.query.limit || 25);
 
-        RunRepo.getResultErrors(runId, (e, r) => {
+        RunRepo.getResultErrors(runId, page, limit, (e, r) => {
             if (e) { logger.error(res, e); return; }
-            res.json({ error: false, error_messages: r });
+            res.json({ error: false, pagination: r });
+        });
+    });
+
+
+    // retrieves the results for the passed runId and errorId (using pagination)
+    router.get('/:runId/errors/:errorId/results', (req, res) => {
+        var runId = req.params.runId;
+        var errorId = req.params.errorId;
+        var page = (req.query.page || 1);
+        var limit = (req.query.limit || 25);
+
+        var query = {
+            'run._id': mongoose.Types.ObjectId(runId),
+            'result.error_message._id': mongoose.Types.ObjectId(errorId)
+        }
+
+        RunRepo.getResults(query, page, limit, (e, r) => {
+            if (e) { logger.error(res, e); return; }
+            res.json({ error: false, pagination: r });
         });
     });
 
@@ -131,7 +153,12 @@ module.exports = function() {
         var states = (req.query.states || enums.Result[2]);
         states = states.replace(' ', '').split(',');
 
-        RunRepo.getPaginatedResults(runId, page, limit, states, (e, r) => {
+        var query = {
+            'run._id': mongoose.Types.ObjectId(runId),
+            'state': { $in: states }
+        }
+
+        RunRepo.getResults(query, page, limit, (e, r) => {
             if (e) { logger.error(res, e); return; }
             res.json({ error: false, pagination: r });
         });
@@ -249,7 +276,12 @@ module.exports = function() {
             enums.Result[5]
         ];
 
-        RunRepo.getPaginatedResults(runId, page, limit, states, (e, r) => {
+        var query = {
+            'run._id': mongoose.Types.ObjectId(runId),
+            'state': { $in: states }
+        }
+
+        RunRepo.getResults(query, page, limit, (e, r) => {
             if (e) { logger.error(res, e); return; }
             res.json({ error: false, pagination: r });
         });

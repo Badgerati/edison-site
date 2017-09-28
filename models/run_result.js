@@ -52,7 +52,7 @@ var schema = new monSchema({
 
 
 // returns results history paginated
-schema.statics.getPaginatedResultsHistory = function(opt, cb) {
+schema.statics.getResultsHistory = function(opt, cb) {
     this.aggregate([
         {
             "$lookup": {
@@ -171,8 +171,16 @@ schema.statics.getPaginatedResultsHistory = function(opt, cb) {
 
 
 // returns results paginated
-schema.statics.getPaginatedResults = function(opt, cb) {
+schema.statics.getResults = function(opt, cb) {
     this.aggregate([
+        {
+            "$lookup": {
+                "from": "runs",
+                "localField": "run",
+                "foreignField": "_id",
+                "as": "run"
+            }
+        },
         {
             "$lookup": {
                 "from": "results",
@@ -188,6 +196,9 @@ schema.statics.getPaginatedResults = function(opt, cb) {
                 "foreignField": "_id",
                 "as": "comment"
             }
+        },
+        {
+            "$unwind": "$run"
         },
         {
             "$unwind": "$result"
@@ -245,7 +256,7 @@ schema.statics.getPaginatedResults = function(opt, cb) {
 }
 
 
-// returns the errors that have occurred for a specific run
+// returns the errors that have occurred for a specific run (excluding null/empty)
 schema.statics.getErrors = function(opt, cb) {
     this.aggregate([
         {
@@ -282,6 +293,18 @@ schema.statics.getErrors = function(opt, cb) {
         {
             "$unwind": "$error_message"
         },
+        {
+            "$match": { 'error_message.message': { $ne: '' } }
+        },
+        {
+            "$sort": { 'count': -1 }
+        },
+        {
+            "$skip": ((opt.page - 1) * opt.limit)
+        },
+        {
+            "$limit": opt.limit
+        }
     ],
     (e, r) => cb(e, r));
 }
@@ -390,7 +413,18 @@ schema.statics.getCount = function(opt, cb) {
             }
         },
         {
+            "$lookup": {
+                "from": "errormessages",
+                "localField": "result.error_message",
+                "foreignField": "_id",
+                "as": "result.error_message"
+            }
+        },
+        {
             "$unwind": "$result.test"
+        },
+        {
+            "$unwind": { path: "$result.error_message", preserveNullAndEmptyArrays: true }
         },
         {
             "$lookup": {
@@ -427,6 +461,56 @@ schema.statics.getCount = function(opt, cb) {
         },
         {
             "$match": opt.query
+        },
+        {
+            "$count": "count"
+        }
+    ],
+    (e, r) => {
+        if (e) { cb(e); return; }
+        cb(null, (r.length == 0 ? 0 : r[0].count))
+    });
+}
+
+
+// returns the count of distinct errors (excluding null and empty)
+schema.statics.getErrorsCount = function(opt, cb) {
+    this.aggregate([
+        {
+            "$match": opt.query
+        },
+        {
+            "$lookup": {
+                "from": "results",
+                "localField": "result",
+                "foreignField": "_id",
+                "as": "result"
+            }
+        },
+        {
+            "$unwind": "$result"
+        },
+        {
+            "$match": { 'result.error_message': { $ne: null } }
+        },
+        {
+            "$group": {
+                '_id': "$result.error_message"
+            }
+        },
+        {
+            "$lookup": {
+                "from": "errormessages",
+                "localField": "_id",
+                "foreignField": "_id",
+                "as": "error_message"
+            }
+        },
+        {
+            "$unwind": "$error_message"
+        },
+        {
+            "$match": { 'error_message.message': { $ne: '' } }
         },
         {
             "$count": "count"

@@ -1,6 +1,6 @@
 # Edison Website
 
-* Test History (list of results for a test, and at top a total stats count [total times run, total fails/passes, etc.])
+* Test History (list of results for a test, and at top a total stats count [total times run, total fails/passes (pie), avg duration (chart) ])
 * Test Search (split down by project)
 * View all TestRuns for a TestRunId
 * View tests for a TestRun
@@ -19,9 +19,7 @@
 ## Ideas
 
 * When auto-refreshing, put load bar next to refresh btn
-* Between "Results" and "Slow" tabs have an "Errors" tab (error limit: 20, result limit: 10)
-    * Shows a table of grouped errors with how many results have that error (ordered by highest)
-    * Clicking an error rows shows an expand row fo results (just name/space/assembly)
+* Result filter for failures should not display "fixed" ones (they're now "successful")
 * Run tags (like groups, but can be multiple)
 
 

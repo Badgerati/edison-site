@@ -10,6 +10,9 @@ var enums = require('../tools/enums.js');
 var CommentRepo = require('./comment_repo.js');
 var RunResultRepo = require('./run_result_repo.js');
 
+// helpers
+var GeneralHelper = require('../helpers/general_helper.js');
+
 
 // repo
 function RunRepo() { }
@@ -130,11 +133,6 @@ RunRepo.updateCounter = function(id, state, cb) {
     );
 }
 
-// deletes a run and results by id
-RunRepo.delete = function(id, cb) {
-    
-}
-
 // returns the count of runs for a project, computer or group
 RunRepo.getCount = function(project, computer, group, cb) {
     var query = { };
@@ -161,10 +159,7 @@ RunRepo.getCount = function(project, computer, group, cb) {
 RunRepo.getPaginatedRuns = function(page, limit, project, computer, group, cb) {
     // page limiting
     page = parseInt(page || 1);
-    limit = parseInt(limit || 25);
-
-    if (limit <= 0) { limit = 1; }
-    if (limit > 100) { limit = 100; }
+    limit = GeneralHelper.restrict(parseInt(limit || 25), 1, 100);
 
     // the query
     var query = { };
@@ -190,8 +185,7 @@ RunRepo.getPaginatedRuns = function(page, limit, project, computer, group, cb) {
 
         // restrict the page number
         var pages = Math.ceil(total / limit);
-        if (page > pages) { page = pages }
-        if (page <= 0) { page = 1; }
+        page = GeneralHelper.restrict(page, 1, pages);
 
         // get the paginated results history
         run.getPaginatedRuns({

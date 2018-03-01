@@ -10,21 +10,6 @@ $(document).ready(function() {
         }
     });
 
-    // bind events on nav-tab bars
-    $('ul.nav-tabs li').click(function(event) {
-        var _this = $(this);
-        var _content = _this.closest('.nav-tabs-content');
-        var _active = _this.closest('ul.nav-tabs').find('li.active');
-
-        // hide the currently active tab
-        _active.removeClass('active');
-        _content.find('#' + _active.attr('data-section')).addClass('hidden');
-
-        // show the now focus tab
-        _this.addClass('active');
-        _content.find('#' + _this.attr('data-section')).removeClass('hidden');
-    });
-
     // bind generic events
     bindGenericEvents();
 
@@ -36,6 +21,21 @@ $(document).ready(function() {
 function bindGenericEvents() {
     $('.clickable-row').unbind().click(function() {
         window.location = $(this).data('href');
+    });
+
+    // bind events on nav-tab bars
+    $('ul.nav-tabs li').unbind().click(function(event) {
+        var _this = $(this);
+        var _content = _this.closest('.nav-tabs-content');
+        var _active = _this.closest('ul.nav-tabs').find('li.active');
+
+        // hide the currently active tab
+        _active.removeClass('active');
+        _content.find('#' + _active.attr('data-section')).addClass('hidden');
+
+        // show the now focus tab
+        _this.addClass('active');
+        _content.find('#' + _this.attr('data-section')).removeClass('hidden');
     });
 
     $('tr[data-id] span.history').unbind().click(function(e) {
@@ -109,6 +109,7 @@ function doAjaxCall(url, method, data, callback, form, submit, input, reverter) 
         url: url,
         type: method,
         data: data,
+        crossDomain: true,
         success: function(data) {
             if (form || submit) {
                 var _submit = submit || findSubmit(form);
@@ -170,16 +171,20 @@ function bindSelectChange(name, func) {
 }
 
 
-function bindRefreshToggle(func) {
+function bindRefreshToggle(func, millis) {
     if (!func) {
         return;
+    }
+
+    if (!millis || millis < 10000) {
+        millis = 10000;
     }
 
     $('#refresh-toggle').click(function() {
         $(this).toggleClass('btn-default').toggleClass('btn-success');
 
         if ($(this).hasClass('btn-success')) {
-            var id = setInterval(func, 10000);
+            var id = setInterval(func, millis);
             $(this).data('interval-id', id);
         }
         else {
@@ -226,6 +231,7 @@ function showProgress(name, location) {
         
     $(location).prepend(html);
 }
+
 
 function hideProgress(name) {
     if (!name) {
@@ -735,6 +741,23 @@ function formatNumber(value)
 
     var second = split.length > 1 ? '.' + split[1] : '';
     return first + second;
+}
+
+
+function formatTime(time) {
+    return moment.duration(time).humanize();
+}
+
+
+function formatDate(date) {
+    return moment(date).format('YYYY[-]MM[-]DD HH[:]mm[:]ss');
+}
+
+
+function getDuration(start, end) {
+    start = moment(start);
+    end = moment(end);
+    return formatTime(end.diff(start));
 }
 
 

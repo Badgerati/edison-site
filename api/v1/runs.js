@@ -288,12 +288,5 @@ module.exports = function() {
     });
 
 
-    // deletes a run and all associated test results
-    router.delete('/:runId', (req, res) => {
-        // delete the results (RunResults)
-        // delete the run (Run)
-    });
-
-
     return router;
 }

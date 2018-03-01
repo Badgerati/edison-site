@@ -12,9 +12,9 @@ Logger.error = function(res, err, msg) {
         return;
     }
 
-    console.log(err);
 
     if (res) {
-        res.json({ error: true, message: (msg || err.message) });
+        console.log(err);
+        res.json({ error: true, message: (msg || err.message || err) });
     }
 }

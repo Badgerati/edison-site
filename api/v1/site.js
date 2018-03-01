@@ -8,7 +8,7 @@ var router = express.Router();
 
 module.exports = function() {
 
-    // get a run with passed ID
+    // basic endpoint to test if the site is alive
     router.get('/alive', (req, res) => {
         res.json({ error: false });
     });

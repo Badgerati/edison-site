@@ -90,3 +90,21 @@ GeneralHelper.getHash = function(items) {
     value = value.substring(0, value.length - 1);
     return hash.sha1(value);
 }
+
+
+// restricts a value between two other values
+GeneralHelper.restrict = function(value, min, max) {
+    if (max < min) {
+        max = min;
+    }
+
+    if (value < min) {
+        return min;
+    }
+
+    if (value > max) {
+        return max;
+    }
+
+    return value;
+}

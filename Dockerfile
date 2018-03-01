@@ -1,8 +1,8 @@
 # the image to use
-FROM node:argon
+FROM edison/node-base:latest
 
 # maintainer of this dockerfile
-MAINTAINER Matthew Kelly (Badgerati)
+LABEL Matthew Kelly (Badgerati)
 
 # create and copy source to the app directory
 RUN mkdir -p /usr/src/app
@@ -12,9 +12,11 @@ COPY . /usr/src/app
 WORKDIR /usr/src/app
 
 # install npm modules
-RUN npm config set loglevel warn
-RUN npm config set ignore-scripts false
-RUN npm install
+RUN npm install --quiet
+
+# install frontend libraries
+RUN bower install
+RUN gulp
 
 # expose the main port for node
 EXPOSE 8082

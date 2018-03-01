@@ -22,10 +22,8 @@ try {
     /////////////////////////////////////
     // mongo setup
     /////////////////////////////////////
-    var mongo_conn = (process.env.EDISON_MONGO_CONN || process.env.MONGO_CONN || config.mongo.connection);
-
     mongoose.Promise = global.Promise;
-    mongoose.connect(mongo_conn, { useMongoClient: true }, (err) => {
+    mongoose.connect(config.mongo.connection, { useMongoClient: true }, (err) => {
         if (err) {
             console.log(err);
             throw err;
@@ -39,7 +37,7 @@ try {
     // setup express
     /////////////////////////////////////
     var app = express();
-    app.set('port', (process.env.PORT || config.port));
+    app.set('port', config.port);
 
     // body JSON parsing
     app.use(bodyParser.json());
@@ -85,7 +83,6 @@ try {
     // setup page + action routes
     /////////////////////////////////////
     app.use('/', require('./routes/pages.js')());
-    app.use('/', require('./routes/actions.js')());
 
 
     /////////////////////////////////////

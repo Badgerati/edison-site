@@ -11,7 +11,7 @@
 
 ## Home Page
 
-* Filterable by Project and Environemnt (default All/All)
+* Filterable by Project and Environment (default All/All)
 * Shows recent last 5 runs
 * Shows top 5 slowest tests
 * Shows top 5 most failing tests
@@ -21,6 +21,8 @@
 * When auto-refreshing, put load bar next to refresh btn
 * Result filter for failures should not display "fixed" ones (they're now "successful")
 * Run tags (like groups, but can be multiple)
-
+* Ability to update state of a test (from failure to success)
+* Get run filtered by date
+* Dashboard page to show live feed of runs
 
 Need a mechanism to auto-complete runs that haven't be completed or updated after 1hr.

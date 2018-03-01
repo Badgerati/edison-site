@@ -119,7 +119,7 @@ module.exports = function() {
         NavHelper.getSubNavLists((e, p, c, g) => {
             render(e, p, c, g);
         });
-    })
+    });
 
 
     /////////////////////////////////////

@@ -8,7 +8,6 @@ var logger = require('../../tools/logger.js');
 // helpers
 var NavHelper = require('../../helpers/nav_helper.js');
 var GeneralHelper = require('../../helpers/general_helper.js');
-var GeneralHelper = require('../../helpers/general_helper.js');
 
 // repos
 var RunResultRepo = require('../../repos/run_result_repo.js');
